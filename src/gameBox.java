@@ -4,12 +4,13 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+
 
 public class gameBox extends JFrame implements ActionListener {
 
     GridBagLayout gridBag = new GridBagLayout();
     ArrayList<JCheckBox> boxes = new ArrayList<JCheckBox>();
+    ArrayList<JCheckBox> ckeckedBoxes = new ArrayList<JCheckBox>(); 
     ArrayList<String> boxesID = new ArrayList<String>();
     String buttonText = ("Select Boxes!");
     JButton button = new JButton(buttonText);
@@ -75,32 +76,36 @@ public class gameBox extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        int boxesChecked = 0;
-        ArrayList<JCheckBox> boxArray = boxes;
+        //TODO make an array merge system to detect what boxes were checked so i can make sure they are disabled for the bots turn
+        
         System.out.println(e.getActionCommand());
-        if (e.getActionCommand() == "Submit Move") {
+        if (e.getActionCommand() == "Submit Move" || e.getActionCommand() == buttonText) {
+            
+
+
+            
+
+        } else {
             
 
 
 
-        } else {
-
-            if(boxesID.size() == 0){
-                button.setText(buttonText);
-
-            }else{
-                button.setText("Submit Move");
-                button.setActionCommand("Submit Move");
-            }
-
             if (boxesID.contains(e.getActionCommand())) {
-                boxesChecked--;
+                
                 boxesID.remove(e.getActionCommand());
                 System.out.println(boxesID);
-
+                if (boxesID.size() == 0) {
+                    button.setText(buttonText);
+                    button.setActionCommand(buttonText);
+                }
             } else {
                 boxesID.add(e.getActionCommand());
-                boxesChecked++;
+                
+
+                if (boxesID.size() <= 1) {
+                    button.setText("Submit Move");
+                    button.setActionCommand("Submit Move");
+                }
 
             }
             if (boxesID.size() >= 3) {
@@ -124,6 +129,9 @@ public class gameBox extends JFrame implements ActionListener {
             }
         }
     }
+
+
+
 
     // makes a box with a unique id
     public JCheckBox boxMaker(int ID) {
@@ -163,11 +171,5 @@ public class gameBox extends JFrame implements ActionListener {
 
     }
 
-    public static void wait(int s) {
-        try {
-			TimeUnit.SECONDS.sleep(s);
-		} catch (InterruptedException e) {
-			System.out.println("Thread is interuppted....");
-		}
-    }
+    
 }
