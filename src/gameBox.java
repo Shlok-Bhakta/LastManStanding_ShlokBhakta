@@ -4,12 +4,15 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class gameBox extends JFrame implements ActionListener {
 
     GridBagLayout gridBag = new GridBagLayout();
     ArrayList<JCheckBox> boxes = new ArrayList<JCheckBox>();
     ArrayList<String> boxesID = new ArrayList<String>();
+    String buttonText = ("Select Boxes!");
+    JButton button = new JButton(buttonText);
 
     public gameBox() {
         super();
@@ -52,7 +55,7 @@ public class gameBox extends JFrame implements ActionListener {
             }
         }
         /* Submit Button */ {
-            JButton button = new JButton("Submit Move");
+
             try {
                 Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("OpenSans-SemiBold.ttf"))
                         .deriveFont(12f);
@@ -74,12 +77,21 @@ public class gameBox extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         int boxesChecked = 0;
         ArrayList<JCheckBox> boxArray = boxes;
-
+        System.out.println(e.getActionCommand());
         if (e.getActionCommand() == "Submit Move") {
+            
 
 
 
         } else {
+
+            if(boxesID.size() == 0){
+                button.setText(buttonText);
+
+            }else{
+                button.setText("Submit Move");
+                button.setActionCommand("Submit Move");
+            }
 
             if (boxesID.contains(e.getActionCommand())) {
                 boxesChecked--;
@@ -98,16 +110,15 @@ public class gameBox extends JFrame implements ActionListener {
                             boxes.get(l).setEnabled(false);
 
                         }
-                        if(boxes.get(l).isSelected()){
+                        if (boxes.get(l).isSelected()) {
                             boxes.get(l).setEnabled(true);
                         }
                     }
-                    
 
                 }
 
-            }else{
-                for(int l = 0; l < boxes.size(); l++){
+            } else {
+                for (int l = 0; l < boxes.size(); l++) {
                     boxes.get(l).setEnabled(true);
                 }
             }
@@ -152,4 +163,11 @@ public class gameBox extends JFrame implements ActionListener {
 
     }
 
+    public static void wait(int s) {
+        try {
+			TimeUnit.SECONDS.sleep(s);
+		} catch (InterruptedException e) {
+			System.out.println("Thread is interuppted....");
+		}
+    }
 }
