@@ -5,12 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
 public class gameBox extends JFrame implements ActionListener {
 
     GridBagLayout gridBag = new GridBagLayout();
     ArrayList<JCheckBox> boxes = new ArrayList<JCheckBox>();
-    ArrayList<JCheckBox> ckeckedBoxes = new ArrayList<JCheckBox>(); 
+    ArrayList<String> boxesLeft = new ArrayList<String>();
+    ArrayList<String> boxesChecked = new ArrayList<String>();
     ArrayList<String> boxesID = new ArrayList<String>();
     String buttonText = ("Select Boxes!");
     JButton button = new JButton(buttonText);
@@ -51,9 +51,11 @@ public class gameBox extends JFrame implements ActionListener {
                     JCheckBox box = boxMaker(ID);
                     this.add(box, setConstraints(row, col));
                     boxes.add(box);
+                    
                     ID++;
                 }
             }
+            
         }
         /* Submit Button */ {
 
@@ -71,27 +73,34 @@ public class gameBox extends JFrame implements ActionListener {
             c.gridwidth = 6;
             this.add(button, c);
         }
-        System.out.println(boxes.get(0));
+        
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //TODO make an array merge system to detect what boxes were checked so i can make sure they are disabled for the bots turn
-        
+
+
         System.out.println(e.getActionCommand());
         if (e.getActionCommand() == "Submit Move" || e.getActionCommand() == buttonText) {
-            
 
-
-            
-
+            for (int FreezeButton = 0; FreezeButton < boxesID.size(); FreezeButton++) {
+                System.out.println(IDToInt(boxesID.get(FreezeButton)));
+                System.out.println(boxesID.get(FreezeButton));
+                boxesLeft.remove(boxesID.get(FreezeButton));
+                boxes.get(IDToInt(boxesID.get(FreezeButton))).setSelected(false);
+                boxes.get(IDToInt(boxesID.get(FreezeButton))).setEnabled(false);
+                boxesChecked.add(boxesID.get(FreezeButton));
+            }
+            boxesID.clear();
+            System.out.println(boxesLeft);
+            System.out.println(boxesChecked);
+            for (int l = 0; l < boxesLeft.size(); l++) {
+                boxes.get(IDToInt(boxesLeft.get(l))).setEnabled(true);
+            }
         } else {
-            
-
-
 
             if (boxesID.contains(e.getActionCommand())) {
-                
+
                 boxesID.remove(e.getActionCommand());
                 System.out.println(boxesID);
                 if (boxesID.size() == 0) {
@@ -100,8 +109,7 @@ public class gameBox extends JFrame implements ActionListener {
                 }
             } else {
                 boxesID.add(e.getActionCommand());
-                
-
+                System.out.println(boxesID);
                 if (boxesID.size() <= 1) {
                     button.setText("Submit Move");
                     button.setActionCommand("Submit Move");
@@ -109,7 +117,7 @@ public class gameBox extends JFrame implements ActionListener {
 
             }
             if (boxesID.size() >= 3) {
-                for (int k = 0; k < boxesID.size() - 1; k++) {
+                for (int k = 0; k < boxesID.size(); k++) {
                     for (int l = 0; l < boxes.size(); l++) {
                         if (!(boxesID.get(k) == boxes.get(l).getActionCommand())) {
                             boxes.get(l).setEnabled(false);
@@ -123,21 +131,22 @@ public class gameBox extends JFrame implements ActionListener {
                 }
 
             } else {
-                for (int l = 0; l < boxes.size(); l++) {
-                    boxes.get(l).setEnabled(true);
+                for (int l = 0; l < boxesLeft.size(); l++) {
+                    
+                    boxes.get(IDToInt(boxesLeft.get(l))).setEnabled(true);
                 }
             }
+
         }
+
     }
-
-
-
 
     // makes a box with a unique id
     public JCheckBox boxMaker(int ID) {
         JCheckBox box = new JCheckBox();
         box.addActionListener(this);
         box.setActionCommand("ID_" + ID);
+        boxesLeft.add(box.getActionCommand());
         return box;
     }
 
@@ -171,5 +180,12 @@ public class gameBox extends JFrame implements ActionListener {
 
     }
 
-    
+    public int IDToInt(String IDnum) {
+        int ID = -1;
+
+        ID = IDnum.charAt(3)-48;
+        
+        return ID;
+
+    }
 }
