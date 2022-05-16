@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class gameBox extends JFrame implements ActionListener {
 
@@ -14,6 +15,7 @@ public class gameBox extends JFrame implements ActionListener {
     ArrayList<String> boxesID = new ArrayList<String>();
     String buttonText = ("Select Boxes!");
     JButton button = new JButton(buttonText);
+    int turn = 0;
 
     public gameBox() {
         super();
@@ -51,11 +53,11 @@ public class gameBox extends JFrame implements ActionListener {
                     JCheckBox box = boxMaker(ID);
                     this.add(box, setConstraints(row, col));
                     boxes.add(box);
-                    
+
                     ID++;
                 }
             }
-            
+
         }
         /* Submit Button */ {
 
@@ -73,16 +75,15 @@ public class gameBox extends JFrame implements ActionListener {
             c.gridwidth = 6;
             this.add(button, c);
         }
-        
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
-
         System.out.println(e.getActionCommand());
         if (e.getActionCommand() == "Submit Move" || e.getActionCommand() == buttonText) {
-
+            turn++;
             for (int FreezeButton = 0; FreezeButton < boxesID.size(); FreezeButton++) {
                 System.out.println(IDToInt(boxesID.get(FreezeButton)));
                 System.out.println(boxesID.get(FreezeButton));
@@ -97,6 +98,33 @@ public class gameBox extends JFrame implements ActionListener {
             for (int l = 0; l < boxesLeft.size(); l++) {
                 boxes.get(IDToInt(boxesLeft.get(l))).setEnabled(true);
             }
+            /* AI Turn */ {
+                int I = randomGen(1, 3);
+                int aiBoxSelected = 0;
+                for (int boxesGoingToBeChecked = 0; boxesGoingToBeChecked < I; boxesGoingToBeChecked++) {
+                    try{
+                        aiBoxSelected = randomGen(0, boxesLeft.size() - 1);
+                    }catch(Exception exc){
+                        if(turn % 2 == 0){
+                            System.out.println("bot wins");
+
+                        }else{
+                            System.out.println("Human Win");
+                        }
+
+                    }
+                    
+                    boxes.get(IDToInt(boxesLeft.get(aiBoxSelected))).setEnabled(false);
+                    boxesChecked.add(boxesLeft.get(aiBoxSelected));
+                    System.out.println(boxesLeft);
+                    System.out.println(boxesChecked);
+                    boxesLeft.remove(aiBoxSelected);
+                    
+
+                }
+                turn++;
+            }
+
         } else {
 
             if (boxesID.contains(e.getActionCommand())) {
@@ -132,14 +160,24 @@ public class gameBox extends JFrame implements ActionListener {
 
             } else {
                 for (int l = 0; l < boxesLeft.size(); l++) {
-                    
+
                     boxes.get(IDToInt(boxesLeft.get(l))).setEnabled(true);
                 }
             }
-
+            if (boxesID.size() >= 1) {
+                button.setText("Submit Move");
+                button.setActionCommand("Submit Move");
+            }else{
+                button.setText(buttonText);
+                button.setActionCommand(buttonText);
+            }
         }
 
     }
+
+
+
+
 
     // makes a box with a unique id
     public JCheckBox boxMaker(int ID) {
@@ -183,9 +221,21 @@ public class gameBox extends JFrame implements ActionListener {
     public int IDToInt(String IDnum) {
         int ID = -1;
 
-        ID = IDnum.charAt(3)-48;
-        
+        ID = IDnum.charAt(3) - 48;
+
         return ID;
 
     }
+
+    public int randomGen(int min, int max) {
+
+        int randomNum = 0;
+        Random rand = new Random();
+
+        randomNum = rand.nextInt(max - min + 1) + min;
+
+        return randomNum;
+
+    }
+
 }
