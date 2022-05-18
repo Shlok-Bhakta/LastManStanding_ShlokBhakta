@@ -17,7 +17,7 @@ public class gameBox extends JFrame implements ActionListener {
     JButton button = new JButton(buttonText);
     boolean wincond = false;
     int turn = 0;
-
+    JLabel label = new JLabel("Select >=3 boxes");
     public gameBox() {
         super();
         /* JFrame */ {
@@ -30,7 +30,7 @@ public class gameBox extends JFrame implements ActionListener {
 
         }
         /* Label */ {
-            JLabel label = new JLabel("Select >=3 boxes");
+            
             try {
                 Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("OpenSans-SemiBold.ttf"))
                         .deriveFont(12f);
@@ -95,6 +95,8 @@ public class gameBox extends JFrame implements ActionListener {
                 boxesChecked.add(boxesID.get(FreezeButton));
                 if (boxesLeft.size() == 0 && wincond == false) {
                     System.out.println("Human Wins");
+                    button.setText("Game Over!");
+                    label.setText("You Win!");
                     wincond = true;
                     break;
 
@@ -105,46 +107,58 @@ public class gameBox extends JFrame implements ActionListener {
             for (int l = 0; l < boxesLeft.size(); l++) {
                 boxes.get(IDToInt(boxesLeft.get(l))).setEnabled(true);
             }
+            /* AI Turn */ if (wincond == false) {
+                {
+                    int I = 0;
+                    int aiBoxSelected = 0;
+                    switch (boxesLeft.size()) {
+                        case 1:
+                            I = 1;
+                            break;
+                        case 2:
+                            I = randomGen(1, 2);
 
-            /* AI Turn */ {
-                int I = 0;
-                int aiBoxSelected = 0;
-                switch (boxesLeft.size()) {
-                    case 1:
-                        I = 1;
-                        break;
-                    case 2:
-                        I = randomGen(1, 2);
+                            break;
+                        case 3:
+                            I = randomGen(1, 3);
 
-                        break;
-                    case 3:
-                        I = randomGen(1, 3);
-
-                        break;
-                    default:
-                        I = randomGen(1, 3);
-                        break;
-                }
-
-                for (int boxesGoingToBeChecked = 0; boxesGoingToBeChecked < I; boxesGoingToBeChecked++) {
-
-                    if (boxesLeft.size() == 0 && wincond == false) {
-                        System.out.println("Bot Wins");
-                        wincond = true;
-                        boxesLeft.clear();
-                        break;
-                     } else {
-                        aiBoxSelected = randomGen(0, boxesLeft.size() - 1);
+                            break;
+                        default:
+                            I = randomGen(1, 3);
+                            break;
                     }
 
-                    boxes.get(IDToInt(boxesLeft.get(aiBoxSelected))).setEnabled(false);
-                    boxesChecked.add(boxesLeft.get(aiBoxSelected));
+                    for (int boxesGoingToBeChecked = 0; boxesGoingToBeChecked < I; boxesGoingToBeChecked++) {
 
-                    boxesLeft.remove(aiBoxSelected);
-                    /* System.out.println(boxesLeft); */
+                        try {
+                            aiBoxSelected = randomGen(0, boxesLeft.size() - 1);
+                        } catch (IllegalArgumentException ex) {
+                            if (boxesLeft.size() == 0 && wincond == false) {
+                                System.out.println("Bot Wins");
+                                button.setText("Game Over!");
+                                label.setText("You Lost!");
+                                wincond = true;
+                                boxesLeft.clear();
+                                break;
+                            }
+                        }
+
+                        boxes.get(IDToInt(boxesLeft.get(aiBoxSelected))).setEnabled(false);
+                        boxesChecked.add(boxesLeft.get(aiBoxSelected));
+
+                        boxesLeft.remove(aiBoxSelected);
+                        /* System.out.println(boxesLeft); */
+                        if (boxesLeft.size() == 0 && wincond == false) {
+                            System.out.println("Bot Wins");
+                            button.setText("Game Over!");
+                            label.setText("You Lost!");
+                            wincond = true;
+                            boxesLeft.clear();
+
+                        }
+                    }
 
                 }
-
             }
 
         } else {
