@@ -116,11 +116,11 @@ public class gameBox extends JFrame implements ActionListener {
                             I = 1;
                             break;
                         case 2:
-                            I = randomGen(1, 2);
+                            I = 2;
 
                             break;
                         case 3:
-                            I = randomGen(1, 3);
+                            I = 3;
 
                             break;
                         default:
